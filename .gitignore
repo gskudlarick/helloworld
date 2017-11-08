@@ -1,0 +1,8 @@
+.DS_Store
+.project
+*.log
+.classpath
+*.class
+.settings/
+.maven/
+target/
