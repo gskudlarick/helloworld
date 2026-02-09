@@ -6,3 +6,14 @@
 .settings/
 .maven/
 target/
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
