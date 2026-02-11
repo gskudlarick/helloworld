@@ -75,6 +75,10 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
 
+          # Copy compose file and init SQL to EC2
+          scp -o StrictHostKeyChecking=no -i /tmp/deploy_key docker-compose.prod.yml ec2-user@$EC2_HOST:~/app/docker-compose.prod.yml
+          scp -o StrictHostKeyChecking=no -i /tmp/deploy_key backend/init.sql ec2-user@$EC2_HOST:~/app/init.sql
+
           ssh -o StrictHostKeyChecking=no -i /tmp/deploy_key ec2-user@$EC2_HOST << 'DEPLOY'
             cd ~/app
 
