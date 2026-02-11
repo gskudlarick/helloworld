@@ -5,6 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
+    "seed": "node src/seed.js",
     "test": "jest --verbose",
     "test:watch": "jest --watch"
   },
@@ -14,7 +15,8 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "pg": "^8.13.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

@@ -1,15 +1,14 @@
 services:
   postgres:
     image: postgres:16-alpine
-    ports:
-      - "5432:5432"
+    restart: unless-stopped
     environment:
       POSTGRES_USER: helloworld
       POSTGRES_PASSWORD: helloworld
       POSTGRES_DB: helloworld
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/01-states.sql:ro
+      - ./init.sql:/docker-entrypoint-initdb.d/01-states.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U helloworld"]
       interval: 5s
@@ -17,9 +16,8 @@ services:
       retries: 5
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${ECR_BACKEND_URL}:latest
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
@@ -36,9 +34,8 @@ services:
         condition: service_healthy
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ${ECR_FRONTEND_URL}:latest
+    restart: unless-stopped
     ports:
       - "3000:80"
     depends_on:

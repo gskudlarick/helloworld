@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const statesRouter = require("./routes/states");
 
 const app = express();
 
@@ -31,5 +32,7 @@ app.get("/api/greetings", (_req, res) => {
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
+
+app.use("/api/states", statesRouter);
 
 module.exports = app;
