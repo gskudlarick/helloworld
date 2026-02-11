@@ -1,6 +1,7 @@
 import { useState } from "react";
 import GreetingForm from "./components/GreetingForm";
 import GreetingList from "./components/GreetingList";
+import StatesList from "./components/StatesList";
 
 const API_BASE = "/api";
 
@@ -60,6 +61,10 @@ export default function App() {
         <hr className="my-12 border-slate-700" />
 
         <GreetingList apiBase={API_BASE} />
+
+        <hr className="my-12 border-slate-700" />
+
+        <StatesList apiBase={API_BASE} />
       </div>
     </div>
   );

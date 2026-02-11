@@ -108,6 +108,106 @@
       ]
     },
     {
+      "name": "States - List All",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/states"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns array of 50 states', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.be.an('array');",
+              "  pm.expect(body.length).to.eql(50);",
+              "});",
+              "pm.test('Each state has required fields', () => {",
+              "  pm.response.json().forEach(s => {",
+              "    pm.expect(s).to.have.property('id');",
+              "    pm.expect(s).to.have.property('name');",
+              "    pm.expect(s).to.have.property('abbreviation');",
+              "    pm.expect(s).to.have.property('capital');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "States - Search",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/states?search=new"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns filtered results', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.length).to.be.greaterThan(0);",
+              "  body.forEach(s => {",
+              "    const combined = (s.name + s.abbreviation + s.capital).toLowerCase();",
+              "    pm.expect(combined).to.include('new');",
+              "  });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "States - Get By ID",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/states/1"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns single state', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.id).to.eql(1);",
+              "  pm.expect(body.name).to.be.a('string');",
+              "  pm.expect(body.abbreviation).to.be.a('string');",
+              "  pm.expect(body.capital).to.be.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "States - Not Found",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/states/999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+              "pm.test('Returns error message', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.error).to.eql('State not found');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "Unknown Route Returns 404",
       "request": {
         "method": "GET",
