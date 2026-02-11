@@ -53,19 +53,31 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set up QEMU (for ARM builds)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push backend image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_BACKEND:latest -t $ECR_REGISTRY/$ECR_BACKEND:${{ github.sha }} ./backend
-          docker push $ECR_REGISTRY/$ECR_BACKEND --all-tags
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_BACKEND }}:latest
+            ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_BACKEND }}:${{ github.sha }}
 
       - name: Build and push frontend image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_FRONTEND:latest -t $ECR_REGISTRY/$ECR_FRONTEND:${{ github.sha }} ./frontend
-          docker push $ECR_REGISTRY/$ECR_FRONTEND --all-tags
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_FRONTEND }}:latest
+            ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_FRONTEND }}:${{ github.sha }}
 
       - name: Deploy to EC2
         env:
